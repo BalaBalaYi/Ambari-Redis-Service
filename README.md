@@ -36,7 +36,7 @@ ambari-server restart
 ![add redis service](/doc/redis-ambari-1.png)
 
 5. Configure the service installation:
-##### For single instance deployment
+### For single instance deployment
 1). choose 1 node be the master:
 ![config master](/doc/redis-ambari-2.png)
 
@@ -49,7 +49,7 @@ ambari-server restart
 4). configure cluster disabled:
 ![config cluster disabled](/doc/redis-ambari-5.png)
 
-##### For cluster mode deployment
+### For cluster mode deployment
 1). choose at least 3 nodes be the master:
 ![config master](/doc/redis-ambari-7.png)
 
@@ -72,28 +72,28 @@ ambari-server restart
 
 Here is some manually maintaince method specially for cluster operations (All the {} pamas can be found in Redis Configs in Ambari Web):
 
-##### Check cluster: 
+#### Check cluster: 
 ```
 {redis.base.dir}/src/redis-cli --cluster check {host_ip}:{port}
 ```
 
-##### Create cluster: 
+#### Create cluster: 
 ```
 {redis.base.dir}/src/redis-cli --cluster create host1_ip:{master-port} host2_ip:{master-port} host3_ip:{master-port} ...
 ```
 
-##### Add master node to cluster: 
+#### Add master node to cluster: 
 ```
 {redis.base.dir}/src/redis-cli --cluster add-node {new_host_ip}:{master-port} {exist_cluster_host_ip}:{master-port}
 {redis.base.dir}/src/redis-cli --cluster reshard {new_host_ip}:{master-port}
 ```
 
-##### Add slave node to cluster: 
+#### Add slave node to cluster: 
 ```
 {redis.base.dir}/src/redis-cli --cluster add-node {new_host_ip}:{master-port} {exist_cluster_host_ip}:{slave-port} --cluster-slave
 ```
 
-##### Remove node from cluster: 
+#### Remove node from cluster: 
 ```
 # get node_id by check or info 
 {redis.base.dir}/src/redis-cli --cluster check {host_ip}:{master-port}
@@ -102,13 +102,13 @@ Here is some manually maintaince method specially for cluster operations (All th
 {redis.base.dir}/src/redis-cli --cluster del-node {host_ip}:{port} {node_id}
 ```
 
-##### Clean up node: 
+#### Clean up node: 
 ```
 # if node is already removed from cluster and stopped.
 rm -fr {redis.base.dir} && rm -fr {log.file.dir} && rm -fr {pid.file.dir} && rm -fr {dir}
 ```
 
-##### Re add a removed node back to cluster: 
+#### Re add a removed node back to cluster: 
 ```
 # remove the nodes.conf in dir
 rm -fr {dir}/nodes.conf
