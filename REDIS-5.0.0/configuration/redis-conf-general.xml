@@ -1,0 +1,286 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<configuration supports_final="true">
+
+    <!-- GENERAL -->
+    <property>
+        <name>loglevel</name>
+        <value>notice</value>
+        <display-name>Log Level</display-name>
+        <description>Specify the server verbosity level. This can be one of: debug (a lot of information, useful for development/testing) , verbose (many rarely useful info, but not a mess like the debug level) , notice (moderately verbose, what you want in production probably) , warning (only very important / critical messages are logged)</description>
+    </property>
+
+     <property>
+        <name>syslog-enabled</name>
+        <value>false</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Syslog Enabled</display-name>
+        <description>To enable logging to the system logger, just set 'syslog-enabled' to true, and optionally update the other syslog parameters to suit your needs.</description>
+    </property>
+
+    <property>
+        <name>syslog-ident</name>
+        <value>redis</value>
+        <display-name>Syslog Identity</display-name>
+        <description>Specify the syslog identity. Only when 'Syslog Enabled' is true.</description>
+        <depends-on>
+            <property>
+                <type>redis-conf-general</type>
+                <name>syslog-enabled</name>
+            </property>
+        </depends-on>
+    </property>
+
+    <property>
+        <name>syslog-facility</name>
+        <value>local0</value>
+        <display-name>Syslog Facility</display-name>
+        <description>Specify the syslog facility. Must be USER or between LOCAL0-LOCAL7. Only when 'Syslog Enabled' is true.</description>
+        <depends-on>
+            <property>
+                <type>redis-conf-general</type>
+                <name>syslog-enabled</name>
+            </property>
+        </depends-on>
+    </property>
+
+    <property>
+        <name>databases</name>
+        <value>16</value>
+        <display-name>Databases</display-name>
+        <description>Set the number of databases. The default database is DB 0, you can select a different one on a per-connection basis using SELECT dbid where dbid is a number between 0 and 'databases'-1.</description>
+    </property>
+
+    <property>
+        <name>always-show-logo</name>
+        <value>true</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Show LOGO</display-name>
+        <description>Show a ASCII art logo in startup logs by setting the following option to yes.</description>
+    </property>
+
+    <!-- SECURITY -->
+    <property>
+        <name>requirepass</name>
+        <value>none</value>
+        <value-attributes>
+            <empty-value-valid>true</empty-value-valid>
+        </value-attributes>
+        <display-name>Require Password</display-name>
+        <description>Require clients to issue AUTH 'PASSWORD' before processing any other commands. This might be useful in environments in which you do not trust others with access to the host running redis-server.</description>
+    </property>
+
+    <!-- CLIENTS -->
+    <property>
+        <name>maxclients</name>
+        <value>10000</value>
+        <display-name>Max Clients</display-name>
+        <description>Set the max number of connected clients at the same time. By default this limit is set to 10000 clients.</description>
+    </property>
+
+    <!-- MEMORY MANAGEMENT -->
+    <property>
+        <name>maxmemory</name>
+        <value>0</value>
+        <value-attributes>
+            <type>long</type>
+            <unit>Bytes</unit>
+            <overridable>false</overridable>
+            <empty-value-valid>true</empty-value-valid>
+        </value-attributes>
+        <display-name>Max Memory</display-name>
+        <description>Set a memory usage limit to the specified amount of bytes. When the memory limit is reached Redis will try to remove keys according to the eviction policy selected (see maxmemory-policy).</description>
+    </property>
+
+    <property>
+        <name>maxmemory-policy</name>
+        <value>noeviction</value>
+        <display-name>Max Memory Policy</display-name>
+        <description>MAXMEMORY POLICY: how Redis will select what to remove when maxmemory is reached. You can select among five behaviors:
+1. volatile-lru -> Evict using approximated LRU among the keys with an expire set.
+2. allkeys-lru -> Evict any key using approximated LRU.
+3. volatile-lfu -> Evict using approximated LFU among the keys with an expire set.
+4. allkeys-lfu -> Evict any key using approximated LFU.
+5. volatile-random -> Remove a random key among the ones with an expire set.
+6. allkeys-random -> Remove a random key, any key.
+7. volatile-ttl -> Remove the key with the nearest expire time (minor TTL)
+8. noeviction -> Don't evict anything, just return an error on write operations. Notice: LRU means Least Recently Used. LFU means Least Frequently Used.</description>
+    </property>
+
+    <property>
+        <name>maxmemory-samples</name>
+        <value>5</value>
+        <display-name>Max Memory Samples</display-name>
+        <description>LRU, LFU and minimal TTL algorithms are not precise algorithms but approximated algorithms (in order to save memory), so you can tune it for speed or accuracy. For default Redis will check five keys and pick the one that was used less recently, you can change the sample size using the following configuration directive.</description>
+    </property>
+
+    <property>
+        <name>replica-ignore-maxmemory</name>
+        <value>true</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Replica Ignore Max Memory</display-name>
+        <description>Starting from Redis 5, by default a replica will ignore its maxmemory setting (unless it is promoted to master after a failover or manually). It means that the eviction of keys will be just handled by the master, sending the DEL commands to the replica as keys evict in the master side.</description>
+    </property>
+
+    <!-- LAZY FREEING -->
+    <property>
+        <name>lazyfree-lazy-eviction</name>
+        <value>false</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Lazy Freeing - Lazy Eviction</display-name>
+        <description>Whether to use the non blocking way on eviction. On eviction, because of the maxmemory and maxmemory policy configurations, in order to make room for new data, without going over the specified memory limit.</description>
+    </property>
+
+    <property>
+        <name>lazyfree-lazy-expire</name>
+        <value>false</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Lazy Freeing - Lazy Expire</display-name>
+        <description>Whether to use the non blocking way on expire. Because of expire: when a key with an associated time to live (see the EXPIRE command) must be deleted from memory.</description>
+    </property>
+
+    <property>
+        <name>lazyfree-lazy-server-del</name>
+        <value>false</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Lazy Freeing - Lazy Server Del</display-name>
+        <description>Whether to use the non blocking way on deletion. Because of a side effect of a command that stores data on a key that may already exist. For example the RENAME command may delete the old key content when it is replaced with another one. Similarly SUNIONSTORE or SORT with STORE option may delete existing keys. The SET command itself removes any old content of the specified key in order to replace it with the specified string.</description>
+    </property>
+
+    <property>
+        <name>replica-lazy-flush</name>
+        <value>false</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Lazy Freeing - Replica Lazy Flush</display-name>
+        <description>Whether to use the non blocking way on replica flush. During replication, when a replica performs a full resynchronization with its master, the content of the whole database is removed in order to load the RDB file just transferred.</description>
+    </property>
+
+    <!-- APPEND ONLY MODE -->
+    <property>
+        <name>appendonly</name>
+        <value>false</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Append Only</display-name>
+        <description>The Append Only File is an alternative persistence mode that provides much better durability. For instance using the default data fsync policy (see later in the config file) Redis can lose just one second of writes in a dramatic event like a server power outage, or a single write if something wrong with the Redis process itself happens, but the operating system is still running correctly.</description>
+    </property>
+
+    <property>
+        <name>appendfilename</name>
+        <value>appendonly.aof</value>
+        <display-name>Append File Name</display-name>
+        <description>The name of the append only file (default: "appendonly.aof").</description>
+    </property>
+
+    <property>
+        <name>appendfsync</name>
+        <value>everysec</value>
+        <display-name>Append Fsync Type</display-name>
+        <description>The fsync() call tells the Operating System to actually write data on disk instead of waiting for more data in the output buffer. Some OS will really flush data on disk, some other OS will just try to do it ASAP. Redis supports three different modes:
+1. no: don't fsync, just let the OS flush the data when it wants. Faster.
+2. always: fsync after every write to the append only log. Slow, Safest.
+3. everysec: fsync only one time every second. Compromise.</description>
+    </property>
+
+    <property>
+        <name>no-appendfsync-on-rewrite</name>
+        <value>false</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>No Append Fsync On Rewrite</display-name>
+        <description>When the AOF fsync policy is set to always or everysec, and a background saving process (a background save or AOF log background rewriting) is performing a lot of I/O against the disk, in some Linux configurations Redis may block too long on the fsync() call. In order to mitigate this problem it's possible to use the following option that will prevent fsync() from being called in the main process while a BGSAVE or BGREWRITEAOF is in progress. This means that while another child is saving, the durability of Redis is the same as "appendfsync none".</description>
+    </property>
+
+    <property>
+        <name>auto-aof-rewrite-percentage</name>
+        <value>100</value>
+        <value-attributes>
+            <type>int</type>
+            <minimum>0</minimum>
+            <maximum>100</maximum>
+            <unit>%</unit>
+            <increment-step>1</increment-step>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Auto AOF Rewrite Percentage</display-name>
+        <description>Automatic rewrite of the append only file. Redis is able to automatically rewrite the log file implicitly calling BGREWRITEAOF when the AOF log size grows by the specified percentage. Specify a percentage of zero in order to disable the automatic AOF rewrite feature.</description>
+    </property>
+
+    <property>
+        <name>auto-aof-rewrite-min-size</name>
+        <value>64</value>
+        <value-attributes>
+            <type>int</type>
+            <unit>MB</unit>
+            <increment-step>1</increment-step>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Auto AOF Rewrite Min Size</display-name>
+        <description>Automatic rewrite of the append only file. Redis is able to automatically rewrite the log file implicitly calling BGREWRITEAOF when the AOF log size grows by the specified percentage. This base size is compared to the current size. If the current size is bigger than the specified percentage, the rewrite is triggered. Also you need to specify a minimal size for the AOF file to be rewritten, this is useful to avoid rewriting the AOF file even if the percentage increase is reached but it is still pretty small.</description>
+    </property>
+
+    <property>
+        <name>aof-load-truncated</name>
+        <value>true</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>AOF Load Truncated</display-name>
+        <description>An AOF file may be found to be truncated at the end during the Redis startup process, when the AOF data gets loaded back into memory. If aof-load-truncated is set to yes, a truncated AOF file is loaded and the Redis server starts emitting a log to inform the user of the event. Otherwise if the option is set to no, the server aborts with an error and refuses to start. When the option is set to no, the user requires to fix the AOF file using the "redis-check-aof" utility before to restart the server.</description>
+    </property>
+
+    <property>
+        <name>aof-use-rdb-preamble</name>
+        <value>true</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>AOF Load RDB Preamble</display-name>
+        <description>When rewriting the AOF file, Redis is able to use an RDB preamble in the AOF file for faster rewrites and recoveries. When this option is turned on the rewritten AOF file is composed of two different stanzas: [RDB file][AOF tail]</description>
+    </property>
+
+
+
+
+</configuration>

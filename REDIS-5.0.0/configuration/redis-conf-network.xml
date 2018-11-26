@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<configuration supports_final="true">
+
+    <!-- NETWORK -->
+    <property>
+        <name>bind</name>
+        <value>none</value>
+        <value-attributes>
+            <empty-value-valid>true</empty-value-valid>
+        </value-attributes>
+        <display-name>Bind</display-name>
+        <description>By default, if no "bind" configuration directive is specified, Redis listens for connections from all the network interfaces available on the server. It is possible to listen to just one or multiple selected interfaces using the "bind" configuration directive, followed by one or more IP addresses.# Examples: bind 192.168.1.100 10.0.0.1 or bind 127.0.0.1 ::1</description>
+    </property>
+
+    <property>
+        <name>protected-mode</name>
+        <value>false</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Protected Mode</display-name>
+        <description>Protected mode is a layer of security protection, in order to avoid that Redis instances left open on the internet are accessed and exploited.</description>
+    </property>
+
+    <property>
+        <name>master-port</name>
+        <value>6379</value>
+        <display-name>Master Port</display-name>
+        <description>Accept connections on the specified port, default is 6379.</description>
+    </property>
+
+    <property>
+        <name>slave-port</name>
+        <value>6380</value>
+        <display-name>Slave Port</display-name>
+        <description>Accept connections on the specified port, default is 6380.</description>
+    </property>
+
+    <property>
+        <name>tcp-backlog</name>
+        <value>511</value>
+        <display-name>TCP Backlog</display-name>
+        <description>TCP listen backlog. In high requests-per-second environments you need an high backlog in order to avoid slow clients connections issues.</description>
+    </property>
+
+    <property>
+        <name>unixsocket</name>
+        <value>none</value>
+        <value-attributes>
+            <empty-value-valid>true</empty-value-valid>
+        </value-attributes>
+        <display-name>Unix Socket</display-name>
+        <description>Unix socket. Both params 'unixsocket' and 'unixsocketperm' are needed. e.g./tmp/redis.sock</description>
+    </property>
+
+    <property>
+        <name>unixsocketperm</name>
+        <value>none</value>
+        <value-attributes>
+            <empty-value-valid>true</empty-value-valid>
+        </value-attributes>
+        <display-name>Unix Socket Perm</display-name>
+        <description>Unix socket. Both params 'unixsocket' and 'unixsocketperm' are needed. e.g.700</description>
+    </property>
+
+    <property>
+        <name>timeout</name>
+        <value>0</value>
+        <display-name>Timeout</display-name>
+        <description>Close the connection after a client is idle for N seconds (0 to disable).</description>
+    </property>
+
+    <property>
+        <name>tcp-keepalive</name>
+        <value>300</value>
+        <display-name>TCP Keepalive</display-name>
+        <description>TCP keepalive.If non-zero, use SO_KEEPALIVE to send TCP ACKs to clients in absence of communication.</description>
+    </property>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</configuration>

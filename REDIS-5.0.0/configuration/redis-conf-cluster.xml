@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<configuration supports_final="true">
+
+    <!-- CLUSTER -->
+     <property>
+        <name>cluster-enabled</name>
+        <value>false</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Cluster Enabled</display-name>
+        <description>To enable redis cluster just set 'cluster-enabled' to true. Make the following right: 1. 'bind' is none; 2. 'protect-mode' is no. 3. 'cluster-master-host-list' is updated, can't be none.</description>
+    </property>
+
+    <property>
+        <name>cluster-master-host-list</name>
+        <value>none</value>
+        <display-name>Cluster Master Host List</display-name>
+        <description>Must have a master host list to enable cluster mode. Use 'none' when cluster mode is not enabled. Notice the host of this list will be used as master node. Warning: IP support only! e.g.host-ip1,host-ip2,host-ip3</description>
+        <depends-on>
+            <property>
+                <type>redis-conf-cluster</type>
+                <name>cluster-enabled</name>
+            </property>
+        </depends-on>
+    </property>
+
+    <property>
+        <name>cluster-config-file</name>
+        <value>nodes.conf</value>
+        <display-name>Cluster Config File</display-name>
+        <description>Every cluster node has a cluster configuration file. Make sure that instances running in the same system do not have overlapping cluster configuration file names.</description>
+        <depends-on>
+            <property>
+                <type>redis-conf-cluster</type>
+                <name>cluster-enabled</name>
+            </property>
+        </depends-on>
+    </property>
+
+    <property>
+        <name>cluster-node-timeout</name>
+        <value>15000</value>
+        <value-attributes>
+            <type>int</type>
+            <unit>Milliseconds</unit>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Cluster Node Timeout</display-name>
+        <description>Cluster node timeout is the amount of milliseconds a node must be unreachable for it to be considered in failure state.</description>
+        <depends-on>
+            <property>
+                <type>redis-conf-cluster</type>
+                <name>cluster-enabled</name>
+            </property>
+        </depends-on>
+    </property>
+
+    <property>
+        <name>cluster-replica-validity-factor</name>
+        <value>10</value>
+        <display-name>Cluster Replica Validity Factor</display-name>
+        <description>A replica of a failing master will avoid to start a failover if its data looks too old.</description>
+        <depends-on>
+            <property>
+                <type>redis-conf-cluster</type>
+                <name>cluster-enabled</name>
+            </property>
+        </depends-on>
+    </property>
+
+    <property>
+        <name>cluster-migration-barrier</name>
+        <value>1</value>
+        <display-name>Cluster Migration Barrier</display-name>
+        <description>Default is 1 (replicas migrate only if their masters remain with at least one replica). To disable migration just set it to a very large value. A value of 0 can be set but is useful only for debugging and dangerous in production.</description>
+        <depends-on>
+            <property>
+                <type>redis-conf-cluster</type>
+                <name>cluster-enabled</name>
+            </property>
+        </depends-on>
+    </property>
+
+    <property>
+        <name>cluster-require-full-coverage</name>
+        <value>true</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Cluster Require Full Coverage</display-name>
+        <description>By default Redis Cluster nodes stop accepting queries if they detect there is at least an hash slot uncovered (no available node is serving it). This way if the cluster is partially down (for example a range of hash slots are no longer covered) all the cluster becomes, eventually, unavailable. It automatically returns available as soon as all the slots are covered again.</description>
+        <depends-on>
+            <property>
+                <type>redis-conf-cluster</type>
+                <name>cluster-enabled</name>
+            </property>
+        </depends-on>
+    </property>
+
+    <property>
+        <name>cluster-replica-no-failover</name>
+        <value>false</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Cluster Replica No Failover</display-name>
+        <description>This option, when set to yes, prevents replicas from trying to failover its master during master failures. However the master can still perform a manual failover, if forced to do so.</description>
+        <depends-on>
+            <property>
+                <type>redis-conf-cluster</type>
+                <name>cluster-enabled</name>
+            </property>
+        </depends-on>
+    </property>
+
+</configuration>

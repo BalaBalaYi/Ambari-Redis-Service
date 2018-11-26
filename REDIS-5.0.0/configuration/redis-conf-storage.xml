@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<configuration supports_final="true">
+
+    <!-- GENERAL -->
+     <property>
+        <name>save-enabled</name>
+        <value>true</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Save the DB on Disk Enabled</display-name>
+        <description>Whether to save the database data on disk.</description>
+    </property>
+
+    <property>
+        <name>save-config</name>
+        <value>save 900 1
+save 300 10
+save 60 10000
+        </value>
+        <display-name>Save the DB on Disk Config</display-name>
+        <description>Will save the DB if both the given number of seconds and the given number of write operations against the DB occurred. e.g. save 'seconds 'changes'</description>
+        <depends-on>
+            <property>
+                <type>redis-conf-storage</type>
+                <name>save-enabled</name>
+            </property>
+        </depends-on>
+    </property>
+
+    <property>
+        <name>stop-writes-on-bgsave-error</name>
+        <value>true</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Stop Writes on Bgsave Error</display-name>
+        <description>By default Redis will stop accepting writes if RDB snapshots are enabled (at least one save point) and the latest background save failed. This will make the user aware (in a hard way) that data is not persisting on disk properly, otherwise chances are that no one will notice and some disaster will happen. If the background saving process will start working again Redis will automatically allow writes again.</description>
+    </property>
+
+    <property>
+        <name>rdbcompression</name>
+        <value>true</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>RDB Compression</display-name>
+        <description>Whether to compress string objects using LZF when dump .rdb databases.</description>
+    </property>
+
+    <property>
+        <name>rdbchecksum</name>
+        <value>true</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>RDB Checksum</display-name>
+        <description>Since version 5 of RDB a CRC64 checksum is placed at the end of the file. This makes the format more resistant to corruption but there is a performance hit to pay (around 10%) when saving and loading RDB files, so you can disable it for maximum performances.</description>
+    </property>
+
+    <property>
+        <name>dbfilename</name>
+        <value>dump.rdb</value>
+        <display-name>DB Filename</display-name>
+        <description>The filename where to dump the DB.</description>
+    </property>
+
+    <property>
+        <name>dir</name>
+        <value>/data/data1/redis/</value>
+        <display-name>DB Directory</display-name>
+        <description>The db working directory.</description>
+    </property>
+
+    <!-- REPLICATION -->
+    <property>
+        <name>replica-serve-stale-data</name>
+        <value>true</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Replica Serve Stale Data</display-name>
+        <description>If replica-serve-stale-data is set to 'yes' (the default) the replica will still reply to client requests, possibly with out of date data, or the data set may just be empty if this is the first synchronization. If replica-serve-stale-data is set to 'no' the replica will reply with an error "SYNC with master in progress" to all the kind of commands but to INFO, replicaOF, AUTH, PING, SHUTDOWN, REPLCONF, ROLE, CONFIG, SUBSCRIBE, UNSUBSCRIBE, PSUBSCRIBE, PUNSUBSCRIBE, PUBLISH, PUBSUB, COMMAND, POST, HOST: and LATENCY.</description>
+    </property>
+
+    <property>
+        <name>replica-read-only</name>
+        <value>true</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Replica Read Only</display-name>
+        <description>You can configure a replica instance to accept writes or not. Writing against a replica instance may be useful to store some ephemeral data (because data written on a replica will be easily deleted after resync with the master) but may also cause problems if clients are writing to it because of a misconfiguration.</description>
+    </property>
+
+    <property>
+        <name>repl-diskless-sync</name>
+        <value>false</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Replica Diskless Sync</display-name>
+        <description>Replication SYNC strategy: 1) Disk-backed: The Redis master creates a new process that writes the RDB file on disk. Later the file is transferred by the parent process to the replicas incrementally.2) Diskless: The Redis master creates a new process that directly writes the RDB file to replica sockets, without touching the disk at all.</description>
+    </property>
+
+    <property>
+        <name>repl-diskless-sync-delay</name>
+        <value>5</value>
+        <value-attributes>
+            <type>int</type>
+            <unit>Seconds</unit>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Replica Diskless Sync Delay</display-name>
+        <description>When diskless replication is enabled, it is possible to configure the delay the server waits in order to spawn the child that transfers the RDB via socket to the replicas. The delay is specified in seconds, and by default is 5 seconds. To disable it entirely just set it to 0 seconds and the transfer will start ASAP.</description>
+        <depends-on>
+            <property>
+                <type>redis-conf-storage</type>
+                <name>repl-diskless-sync</name>
+            </property>
+        </depends-on>
+    </property>
+
+    <property>
+        <name>repl-disable-tcp-nodelay</name>
+        <value>false</value>
+        <value-attributes>
+            <type>boolean</type>
+            <overridable>false</overridable>
+        </value-attributes>
+        <display-name>Replica Disable TCP Nodelay</display-name>
+        <description>Disable TCP_NODELAY on the replica socket after SYNC. By default we optimize for low latency, but in very high traffic conditions or when the master and replicas are many hops away, turning this to "yes" may be a good idea.</description>
+    </property>
+
+    <property>
+        <name>replica-priority</name>
+        <value>100</value>
+        <display-name>Replica Priority</display-name>
+        <description>The replica priority is an integer number published by Redis in the INFO output. It is used by Redis Sentinel in order to select a replica to promote into a master if the master is no longer working correctly.</description>
+    </property>
+
+</configuration>
