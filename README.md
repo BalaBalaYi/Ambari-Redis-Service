@@ -125,4 +125,7 @@ rm -fr {dir}/nodes.conf
 
 
 ## Notice
-1. Need more test if using on production.
+1. Only support creating master node cluster for the first time.
+2. Master node scaling need to be done mannually.
+3. Support salve node incremental scaling.
+4. Need more test if using on production.
